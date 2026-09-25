@@ -23,9 +23,23 @@
     
     .timer-text { font-size: 14px; color: #666; margin-top: 15px; }
     .countdown-number { font-weight: bold; color: #e53935; font-size: 18px; }
+
+    /* 生徒向けメッセージ専用ポップアップ */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: white; padding: 25px; border-radius: 12px; width: 85%; max-width: 380px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; }
+    .modal-message { font-size: 17px; color: #333; margin: 20px 0 25px 0; line-height: 1.5; white-space: pre-wrap; font-weight: bold; }
   </style>
 </head>
 <body>
+
+  <!-- 生徒向けメッセージ用ダイアログ -->
+  <div id="custom-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div id="modal-message-text" class="modal-message"></div>
+      <button class="primary" style="margin: 0; width: 100%;" onclick="closeCustomModal()">確認しました</button>
+    </div>
+  </div>
 
   <!-- ホーム画面 -->
   <div id="home-screen" class="screen active">
@@ -94,7 +108,7 @@
   
   <script>
     // ※ここにあなたのGAS WebアプリURL (/exec) を貼り付けます
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxV5qxKYCnb1-4LwKuYqkpj8YFi4d0b9AvEswedr-2XHUav-1a2GxfPGuPCD3a7HqC4Hg/exec";
+    const GAS_API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
 
     let currentStudent = null;
     let selectedSeat = null;
@@ -104,7 +118,6 @@
     let autoHomeTimer = null;
     let countdownInterval = null;
 
-    // GAS API呼出用の共通関数
     async function callGasApi(data) {
       const response = await fetch(GAS_API_URL, {
         method: 'POST',
@@ -130,8 +143,19 @@
     function goHome() {
       clearAutoHomeTimer();
       stopQRScanner();
+      closeCustomModal();
       document.getElementById('student-id').value = '';
       showScreen('home-screen');
+    }
+
+    // メッセージ表示機能
+    function showCustomModal(msg) {
+      document.getElementById('modal-message-text').innerText = msg;
+      document.getElementById('custom-modal').classList.add('active');
+    }
+
+    function closeCustomModal() {
+      document.getElementById('custom-modal').classList.remove('active');
     }
 
     async function login() {
@@ -158,12 +182,13 @@
       currentStudent = result.data;
       usedSeats = currentStudent.usedSeats || [];
       
-      if (currentStudent.hasMessage) {
-        alert(currentStudent.message);
-      }
-      
       setupActionButtons();
       showScreen('action-screen');
+
+      // メッセージがある場合は独自の綺麗なポップアップを表示
+      if (currentStudent.hasMessage) {
+        showCustomModal(currentStudent.message);
+      }
     }
 
     function setupActionButtons() {
@@ -321,7 +346,6 @@
       }
     }
     
-    // リアルタイムカメラ起動
     function startQRScanner() {
       const qrDiv = document.getElementById('qr-reader');
       qrDiv.style.display = 'block';
