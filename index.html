@@ -106,7 +106,6 @@
   <script src="https://unpkg.com/html5-qrcode"></script>
   
   <script>
-    // ※あなたのGAS WebアプリURLが設定されていることを確認してください
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxV5qxKYCnb1-4LwKuYqkpj8YFi4d0b9AvEswedr-2XHUav-1a2GxfPGuPCD3a7HqC4Hg/exec";
 
     let currentStudent = null;
@@ -147,7 +146,6 @@
       showScreen('home-screen');
     }
 
-    // メッセージ表示機能
     function showCustomModal(msg) {
       document.getElementById('modal-message-text').innerText = msg;
       document.getElementById('custom-modal').classList.add('active');
@@ -203,11 +201,12 @@
       
       [btnEnter, btnLeave, btnPause, btnReturn, btnBoothStart, btnBoothEnd].forEach(btn => btn.disabled = true);
       
+      // AB~AG列の最新状態に基づくボタン制御
       if (status === '未入室' || status === '退室') {
         btnEnter.disabled = false;
       } else if (status === '入室' || status === '復帰' || status === '自習ブース利用終了') {
         btnLeave.disabled = false;
-        btnPause.disabled = false;
+        btnPause.disabled = false;       // 入室中・復帰後などに一時離席可能
         btnBoothStart.disabled = false;
       } else if (status === '一時離席') {
         btnLeave.disabled = false;
@@ -215,6 +214,7 @@
       } else if (status === '自習ブース利用開始') {
         btnBoothEnd.disabled = false;
         btnLeave.disabled = false;
+        btnPause.disabled = false;       // 自習ブース利用中も一時離席可能
       }
       
       const boothDiv = document.getElementById('booth-buttons');
