@@ -57,8 +57,7 @@
 
   <!-- アクション選択画面 -->
   <div id="action-screen" class="screen">
-    <h2 id="student-name-display"></h2>
-    <p style="color: #555;">現在の状態: <span id="current-status-display" style="font-weight:bold;"></span></p>
+    <h2 id="student-name-display" style="margin-bottom: 25px;"></h2>
     
     <button id="btn-enter" onclick="selectAction('入室')">入室</button>
     <button id="btn-leave" onclick="selectAction('退室')">退室</button><br>
@@ -107,7 +106,7 @@
   <script src="https://unpkg.com/html5-qrcode"></script>
   
   <script>
-    // ※ここにあなたのGAS WebアプリURL (/exec) を貼り付けます
+    // ※あなたのGAS WebアプリURLが設定されていることを確認してください
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxV5qxKYCnb1-4LwKuYqkpj8YFi4d0b9AvEswedr-2XHUav-1a2GxfPGuPCD3a7HqC4Hg/exec";
 
     let currentStudent = null;
@@ -185,7 +184,6 @@
       setupActionButtons();
       showScreen('action-screen');
 
-      // メッセージがある場合は独自の綺麗なポップアップを表示
       if (currentStudent.hasMessage) {
         showCustomModal(currentStudent.message);
       }
@@ -193,7 +191,6 @@
 
     function setupActionButtons() {
       document.getElementById('student-name-display').innerText = currentStudent.name;
-      document.getElementById('current-status-display').innerText = currentStudent.currentStatus;
       
       const status = currentStudent.currentStatus;
       
