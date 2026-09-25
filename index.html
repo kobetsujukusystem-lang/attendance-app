@@ -190,12 +190,12 @@
     function setupActionButtons() {
       document.getElementById('student-name-display').innerText = currentStudent.name;
       
-      const ab = currentStudent.ab; // 入室
-      const ac = currentStudent.ac; // 退室
-      const ad = currentStudent.ad; // 一時離席
-      const ae = currentStudent.ae; // 復帰
-      const af = currentStudent.af; // 自習ブース開始
-      const ag = currentStudent.ag; // 自習ブース終了
+      const ab = currentStudent.ab !== undefined ? String(currentStudent.ab).trim() : ""; // 入室
+      const ac = currentStudent.ac !== undefined ? String(currentStudent.ac).trim() : ""; // 退室
+      const ad = currentStudent.ad !== undefined ? String(currentStudent.ad).trim() : ""; // 一時離席
+      const ae = currentStudent.ae !== undefined ? String(currentStudent.ae).trim() : ""; // 復帰
+      const af = currentStudent.af !== undefined ? String(currentStudent.af).trim() : ""; // 自習ブース開始
+      const ag = currentStudent.ag !== undefined ? String(currentStudent.ag).trim() : ""; // 自習ブース終了
 
       const btnEnter = document.getElementById('btn-enter');
       const btnLeave = document.getElementById('btn-leave');
@@ -204,7 +204,6 @@
       const btnBoothStart = document.getElementById('btn-booth-start');
       const btnBoothEnd = document.getElementById('btn-booth-end');
       
-      // ご指定の条件に基づくボタンの有効/無効判定
       // 1. 入室：AB列が空欄
       btnEnter.disabled = (ab !== "");
 
@@ -217,8 +216,8 @@
       // 4. 復帰：AD列が空欄でない
       btnReturn.disabled = (ad === "");
 
-      // 5. 自習ブース利用開始：AB列が空欄でない
-      btnBoothStart.disabled = (ab === "");
+      // 5. 自習ブース利用開始：AB列が空欄でない かつ AE列が空欄
+      btnBoothStart.disabled = !(ab !== "" && ae === "");
 
       // 6. 自習ブース利用終了：AF列が空欄でない
       btnBoothEnd.disabled = (af === "");
