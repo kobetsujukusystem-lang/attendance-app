@@ -190,8 +190,13 @@
     function setupActionButtons() {
       document.getElementById('student-name-display').innerText = currentStudent.name;
       
-      const status = currentStudent.currentStatus;
-      
+      const ab = currentStudent.ab; // 入室
+      const ac = currentStudent.ac; // 退室
+      const ad = currentStudent.ad; // 一時離席
+      const ae = currentStudent.ae; // 復帰
+      const af = currentStudent.af; // 自習ブース開始
+      const ag = currentStudent.ag; // 自習ブース終了
+
       const btnEnter = document.getElementById('btn-enter');
       const btnLeave = document.getElementById('btn-leave');
       const btnPause = document.getElementById('btn-pause');
@@ -199,23 +204,24 @@
       const btnBoothStart = document.getElementById('btn-booth-start');
       const btnBoothEnd = document.getElementById('btn-booth-end');
       
-      [btnEnter, btnLeave, btnPause, btnReturn, btnBoothStart, btnBoothEnd].forEach(btn => btn.disabled = true);
-      
-      // AB~AG列の最新状態に基づくボタン制御
-      if (status === '未入室' || status === '退室') {
-        btnEnter.disabled = false;
-      } else if (status === '入室' || status === '復帰' || status === '自習ブース利用終了') {
-        btnLeave.disabled = false;
-        btnPause.disabled = false;       // 入室中・復帰後などに一時離席可能
-        btnBoothStart.disabled = false;
-      } else if (status === '一時離席') {
-        btnLeave.disabled = false;
-        btnReturn.disabled = false;
-      } else if (status === '自習ブース利用開始') {
-        btnBoothEnd.disabled = false;
-        btnLeave.disabled = false;
-        btnPause.disabled = false;       // 自習ブース利用中も一時離席可能
-      }
+      // ご指定の条件に基づくボタンの有効/無効判定
+      // 1. 入室：AB列が空欄
+      btnEnter.disabled = (ab !== "");
+
+      // 2. 退室：AB列が空欄でない
+      btnLeave.disabled = (ab === "");
+
+      // 3. 一時離席：AB列が空欄でない
+      btnPause.disabled = (ab === "");
+
+      // 4. 復帰：AD列が空欄でない
+      btnReturn.disabled = (ad === "");
+
+      // 5. 自習ブース利用開始：AB列が空欄でない
+      btnBoothStart.disabled = (ab === "");
+
+      // 6. 自習ブース利用終了：AF列が空欄でない
+      btnBoothEnd.disabled = (af === "");
       
       const boothDiv = document.getElementById('booth-buttons');
       boothDiv.style.display = currentStudent.canUseBooth ? 'block' : 'none';
